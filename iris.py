@@ -31,9 +31,20 @@ def __targetFunction__(x_i, theta, bias):
     ans += bias
     return ans
 
+def __deltaFunction__(x_i, prediction, fact):
+    return 2 * (fact-prediction) * (1-prediction) * prediction * x_i 
+
 def __updateTheta__(x_i, prediction, fact):
     for i in range(len(theta)):
-        theta[i] += alpha * 2 * (fact-prediction) * (1-prediction) * prediction * x_i[i]
+        theta[i] += alpha * __deltaFunction__(x_i[i], prediction, fact)
+
+def __updateBias__(prediction, fact):
+    global bias
+    bias += alpha * __deltaFunction__(1, prediction, fact)
+
+def __updateFunction__(x_i, prediction, fact):
+    __updateTheta__(x_i, prediction, fact)
+    __updateBias__(prediction, fact)
 
 def __classIndentifier__(prediction):
     return 0 if prediction < 0.5 else 1
@@ -44,7 +55,7 @@ def __batch__():
         total = __targetFunction__(x[i], theta, bias)
         prediction = __sigmoidFunction__(total)
         error += (prediction-irisClass[i]) ** 2
-        __updateTheta__(x[i], prediction, irisClass[i])
+        __updateFunction__(x[i], prediction, irisClass[i])
     return error/N
 
 def __plotAccuracy__(axis_x, axis_y):
