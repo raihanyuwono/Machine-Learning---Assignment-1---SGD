@@ -65,7 +65,7 @@ def __plotAccuracy__(axis_x, axis_y):
     plt.plot(axis_x, axis_y)
     plt.xlabel('Epoch')
     plt.ylabel('Error')
-    plt.show() 
+    plt.show()
 
 def __SGD__():
     accuracy = [__batch__() for _ in range(60)]
