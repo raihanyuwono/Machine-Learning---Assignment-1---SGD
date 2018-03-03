@@ -22,7 +22,7 @@ def __readData__(filePath):
     N = len(irisClass)
 
 def __sigmoidFunction__(prediction):
-    return 1.0/(1+math.exp(-prediction))
+    return 1.0/(1+math.exp(-prediction))    
 
 def __targetFunction__(x_i, theta, bias):
     ans = 0.0
@@ -30,6 +30,9 @@ def __targetFunction__(x_i, theta, bias):
         ans += x_i[i] * theta[i]
     ans += bias
     return ans
+
+def __lossFunction__(prediction, fact):
+    return (fact-prediction) ** 2
 
 def __deltaFunction__(x_i, prediction, fact):
     return 2 * (fact-prediction) * (1-prediction) * prediction * x_i 
@@ -54,7 +57,7 @@ def __batch__():
     for i in range(N):
         total = __targetFunction__(x[i], theta, bias)
         prediction = __sigmoidFunction__(total)
-        error += (prediction-irisClass[i]) ** 2
+        error += __lossFunction__(prediction, irisClass[i])
         __updateFunction__(x[i], prediction, irisClass[i])
     return error/N
 
