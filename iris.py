@@ -13,7 +13,7 @@ x, theta, bias = ([], [random.random() for _ in range(4)], random.random())
 # x[3] = petal_width
 
 def __readData__(filePath):
-    global N
+    global N 
     with open(filePath) as csvData:
         reader = csv.reader(csvData)
         for rowData in reader:
