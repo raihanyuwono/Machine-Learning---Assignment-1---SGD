@@ -61,16 +61,16 @@ def __batch__():
         __updateFunction__(x[i], prediction, irisClass[i])
     return error/N
 
-def __plotVaries__(axis_x, axis_y):
+def __plotAccuracy__(axis_x, axis_y):
     plt.plot(axis_x, axis_y)
     plt.xlabel('Epoch')
     plt.ylabel('Error')
     plt.show() 
 
 def __SGD__():
-    varies = [__batch__() for _ in range(60)]
+    accuracy = [__batch__() for _ in range(60)]
     # print(accuracy)
-    __plotVaries__(range(len(varies)), varies)
+    __plotAccuracy__(range(len(accuracy)), accuracy)
 
 def __predict__():
     while True:
