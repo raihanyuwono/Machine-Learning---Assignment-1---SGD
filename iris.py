@@ -67,7 +67,7 @@ def __plotAccuracy__(axis_x, axis_y):
 def __SGD__():
     accuracy = [__batch__() for _ in range(60)]
     # print(accuracy)
-    __plotAccuracy__([_ for _ in range(len(accuracy))], accuracy)
+    __plotAccuracy__(range(len(accuracy)), accuracy)
 
 def __predict__():
     while True:
