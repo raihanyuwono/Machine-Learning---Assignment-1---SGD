@@ -4,6 +4,8 @@ import math
 import matplotlib.pyplot as plt
 
 N = 0 # Total data
+epoch = 60
+nTraining, nValidation = (0, 0)
 alpha = 0.1 # Change to try different learning rate
 irisClass = []
 x, theta, bias = ([], [random.random() for _ in range(4)], random.random())
@@ -13,16 +15,18 @@ x, theta, bias = ([], [random.random() for _ in range(4)], random.random())
 # x[3] = petal_width
 
 def __readData__(filePath):
-    global N 
+    global N, nTraining, nValidation
     with open(filePath) as csvData:
         reader = csv.reader(csvData)
         for rowData in reader:
-            x.append([float(rowData[0]), float(rowData[1]), float(rowData[2]), float(rowData[3])])
+            x.append([float(rowData[i]) for i in range(len(rowData)-1)])
             irisClass.append(0 if rowData[4]=='Iris-setosa' else 1) # 0 for iris-setosa, 1 for iris-versicolor
     N = len(irisClass)
+    nTraining = int(.8 * N)
+    nValidation = N - nTraining
 
 def __sigmoidFunction__(prediction):
-    return 1.0/(1+math.exp(-prediction))    
+    return 1.0/(1 + math.exp(-prediction))    
 
 def __targetFunction__(x_i, theta, bias):
     ans = 0.0
@@ -52,25 +56,39 @@ def __updateFunction__(x_i, prediction, fact):
 def __classIndentifier__(prediction):
     return 0 if prediction < 0.5 else 1
 
-def __batch__():
+def __training__():
     error = 0.0
-    for i in range(N):
+    for i in range(nTraining):
         total = __targetFunction__(x[i], theta, bias)
         prediction = __sigmoidFunction__(total)
         error += __lossFunction__(prediction, irisClass[i])
         __updateFunction__(x[i], prediction, irisClass[i])
-    return error/N
+    return error / nTraining
 
-def __plotAccuracy__(axis_x, axis_y):
-    plt.plot(axis_x, axis_y)
+def __validation__():
+    error = 0.0
+    for i in range(nTraining, nTraining + nValidation):
+        total = __targetFunction__(x[i], theta, bias)
+        prediction = __sigmoidFunction__(total)
+        error += __lossFunction__(prediction, irisClass[i])
+    return error / nValidation
+
+def __plotError__(*printedData):
+    for data in printedData:
+        plt.plot(data[0], label=data[1])
+    plt.legend(loc='upper right')
     plt.xlabel('Epoch')
     plt.ylabel('Error')
-    plt.show() 
+    plt.show()
 
 def __SGD__():
-    accuracy = [__batch__() for _ in range(60)]
-    # print(accuracy)
-    __plotAccuracy__(range(len(accuracy)), accuracy)
+    training, validation = ([], [])
+    print('Training\tValidation')
+    for i in range(epoch):
+        training.append(__training__())
+        validation.append(__validation__())
+        print('%f\t%f' % (training[i], validation[i]))
+    __plotError__([training, 'Training'], [validation, 'Validation'])
 
 def __predict__():
     while True:
@@ -80,8 +98,10 @@ def __predict__():
         print('iris-setosa' if __classIndentifier__(prediction) == 0 else 'iris-versicolor')
 
 def __main__():
+    print('theta =', theta)
+    print('bias =', bias)
     __readData__('iris.data')
     __SGD__()
-    __predict__()
+    # __predict__()
 
 __main__()
