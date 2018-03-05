@@ -82,6 +82,8 @@ def __plotError__(*printedData):
     plt.show()
 
 def __SGD__():
+    # training = [__training__() for i in range(epoch)]
+    # validation = [__validation__() for i in range(epoch)]
     training, validation = ([], [])
     print('Training\tValidation')
     for i in range(epoch):
